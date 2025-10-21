@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS cbmm_saga (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    event_id VARCHAR(64) NOT NULL UNIQUE,
+    cbmm_status VARCHAR(32) NOT NULL,
+    payload JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS event_outbox (
+    id         CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    event_type VARCHAR(100) NOT NULL,
+    aggregate_id VARCHAR(64) NOT NULL,
+    payload JSON NOT NULL,
+    status VARCHAR(32) DEFAULT 'PENDING',
+    retries INT DEFAULT 0,
+    published_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_agg_type (aggregate_id, event_type),
+    INDEX idx_status (status)
+);

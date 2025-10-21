@@ -1,0 +1,23 @@
+spring:
+  jackson:
+    time-zone: America/Buenos_Aires
+    property-naming-strategy: SNAKE_CASE
+  application:
+    name: ms-accounts
+  profiles:
+    active: local
+  main:
+    banner-mode: off
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/accounts
+    username: cobre_rw
+    password: cobre_rw
+
+  flyway:
+    enabled: true
+    url: jdbc:mysql://localhost:3306/accounts
+    user: root
+    password: cobre
+    locations: classpath:db/migration
+    baseline-on-migrate: true

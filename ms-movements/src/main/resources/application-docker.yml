@@ -1,0 +1,57 @@
+server:
+  port: 8091
+
+spring:
+  r2dbc:
+    url: r2dbc:mysql://mysql:3306/movements
+    username: cobre
+    password: cobre
+
+  flyway:
+    enabled: true
+    url: jdbc:mysql://mysql:3306/movements
+    user: cobre
+    password: cobre
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: accounts-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.info: false
+    listener:
+      ack-mode: record
+      type: single
+      concurrency: 3
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.cobre: DEBUG
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: WARN
+    org.apache.kafka.clients.NetworkClient: WARN
+    org.apache.kafka.clients.FetchSessionHandler: WARN
+    org.springframework.kafka.listener: INFO

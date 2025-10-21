@@ -1,0 +1,45 @@
+server:
+  port: 8082
+
+spring:
+  r2dbc:
+    url: r2dbc:mysql://mysql:3306/accounts
+    username: cobre
+    password: cobre
+
+  flyway:
+    enabled: true
+    url: jdbc:mysql://mysql:3306/accounts
+    user: cobre
+    password: cobre
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: accounts-cbmm-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+management:
+  server:
+    port: 8091
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    com.cobre: DEBUG
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: WARN
+    org.apache.kafka.clients.NetworkClient: WARN
+    org.apache.kafka.clients.FetchSessionHandler: WARN
+    org.springframework.kafka.listener: INFO

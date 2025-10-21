@@ -1,0 +1,69 @@
+server:
+  port: 8085
+
+spring:
+  jackson:
+    time-zone: America/Buenos_Aires
+    property-naming-strategy: SNAKE_CASE
+  application:
+    name: ms-accounts
+  main:
+    banner-mode: off
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/accounts
+    username: cobre
+    password: cobre
+
+  flyway:
+    enabled: true
+    url: jdbc:mysql://localhost:3306/accounts
+    user: cobre
+    password: cobre
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: accounts-cbmm-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+topic:
+  cross_border_money_movement:
+    v1: cross_border_money_movement.request.v1
+    complete.v1: cross_border_money_movement.completed.v1
+    failed.v1: cross_border_money_movement.failed.v1
+
+# http://localhost:8085/public/swagger-ui/index.html
+springdoc:
+  cache:
+    disabled: true
+  show-actuator: false
+  swagger-ui:
+    path: /public/swagger-ui.html
+  api-docs:
+    path: /public/api-docs
+
+logging:
+  level:
+    root: INFO
+    com.cobre: DEBUG
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: WARN
+    org.apache.kafka.clients.NetworkClient: WARN
+    org.apache.kafka.clients.FetchSessionHandler: WARN
+    org.springframework.kafka.listener: INFO

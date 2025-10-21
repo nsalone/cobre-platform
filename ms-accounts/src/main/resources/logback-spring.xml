@@ -1,0 +1,71 @@
+<configuration>
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <globalCustomFields>
+                    <customFields>{"event_type":"logging"}</customFields>
+                </globalCustomFields>
+                <mdc>
+                    <excludeMdcKeyName>observability</excludeMdcKeyName>
+                </mdc>
+                <context/>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <logLevel/>
+                <pattern>
+                    <pattern>
+                        {
+                        "observability": "#tryJson{%mdc{observability}}",
+                        "thread": "%thread",
+                        "logger": "%logger{39}",
+                        "message": "#tryJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+                <logstashMarkers/>
+                <arguments/>
+                <stackTrace>
+                    <fieldName>stackTrace</fieldName>
+                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                        <rootCauseFirst>true</rootCauseFirst>
+                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                        <maxLength>2048</maxLength>
+                        <shortenedClassNameLength>20</shortenedClassNameLength>
+                    </throwableConverter>
+                </stackTrace>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="accessLog"/>
+    </appender>
+
+    <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
+        <appender-ref ref="async"/>
+    </logger>
+
+    <appender name="accessLog" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "event_type":"access",
+                        "event":"#tryJson{%message}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="ch.qos.logback" level="ERROR"/>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

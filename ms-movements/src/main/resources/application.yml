@@ -1,0 +1,105 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+    time-zone: UTC
+
+  application:
+    name: ms-accounts
+  main:
+    banner-mode: off
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/movements
+    username: cobre
+    password: cobre
+
+  flyway:
+    enabled: true
+    url: jdbc:mysql://localhost:3306/movements
+    user: cobre
+    password: cobre
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: accounts-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.info: false
+    listener:
+      ack-mode: record
+      type: single
+      concurrency: 3
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+topic:
+  cross_border_money_movement:
+    v1: cross_border_money_movement.request.v1
+    consumer:
+      complete.v1: cross_border_money_movement.completed.v1
+      failed.v1: cross_border_money_movement.failed.v1
+
+resilience4j:
+  circuit-breaker:
+    configs:
+      default:
+        # numero de llamadas a monitorear para evaluar el estado
+        sliding-window-size: 500
+        # numero permitido de llamadas en estado medio abierto
+        permitted-number-of-calls-in-half-open-state: 150
+        # Número mínimo de llamadas necesarias para evaluar el estado
+        minimum-number-of-calls: 100
+        # Duración de espera en estado abierto en ms
+        wait-duration-in-open-state: 300000
+        failure-rate-threshold: 75
+        slow-call-rate-threshold: 75
+        slow-call-duration-threshold: 8000
+
+
+quotation-api:
+  base-url: https://api.fastforex.io
+  fetch-one: /fetch-one
+  api-key: abe707b227-05eee30a5a-t4cif3
+  expire-at: 30000
+
+# http://localhost:8080/public/swagger-ui/index.html
+springdoc:
+  cache:
+    disabled: true
+  show-actuator: false
+  swagger-ui:
+    path: /public/swagger-ui.html
+  api-docs:
+    path: /public/api-docs
+
+logging:
+  level:
+    root: INFO
+    com.cobre: DEBUG
+    org.springframework.kafka: INFO
+    org.apache.kafka.clients.consumer: WARN
+    org.apache.kafka.clients.NetworkClient: WARN
+    org.apache.kafka.clients.FetchSessionHandler: WARN
+    org.springframework.kafka.listener: INFO
