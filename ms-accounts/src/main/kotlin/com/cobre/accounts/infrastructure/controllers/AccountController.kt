@@ -2,7 +2,10 @@ package com.cobre.accounts.infrastructure.controllers
 
 import com.cobre.accounts.application.usecase.ApplyTransferUseCase
 import com.cobre.accounts.application.usecase.FinalBalanceCalculationUseCase
+import com.cobre.accounts.application.usecase.FinalBalancePreviewUseCase
 import com.cobre.accounts.domain.model.TransactionEvent
+import com.cobre.accounts.infrastructure.controllers.dto.request.AccountBalanceResult
+import com.cobre.accounts.infrastructure.controllers.dto.request.AccountProcessResult
 import com.cobre.accounts.infrastructure.controllers.dto.request.TransferRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -13,7 +16,8 @@ import reactor.core.publisher.Mono
 @RequestMapping("/accounts")
 class AccountController(
     private val applyTransferUseCase: ApplyTransferUseCase,
-    private val finalBalanceCalculationUseCase: FinalBalanceCalculationUseCase
+    private val finalBalanceCalculationUseCase: FinalBalanceCalculationUseCase,
+    private val finalBalancePreviewUseCase: FinalBalancePreviewUseCase
 ) {
 
     @PostMapping("/transfer")
@@ -29,8 +33,13 @@ class AccountController(
         )
 
     @PostMapping("/final-balance")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    fun processTransactions(@RequestBody events: List<TransactionEvent>): Mono<Void> {
-        return finalBalanceCalculationUseCase.process(Flux.fromIterable(events))
+    fun processEvents(@RequestBody events: Flux<TransactionEvent>): Flux<AccountProcessResult> {
+        return finalBalanceCalculationUseCase.process(events)
     }
+
+    @GetMapping("/preview")
+    fun getPreview(): Flux<AccountBalanceResult> {
+        return finalBalancePreviewUseCase.calculateFinalBalances()
+    }
+
 }

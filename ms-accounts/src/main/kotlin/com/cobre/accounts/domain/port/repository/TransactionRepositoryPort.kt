@@ -9,4 +9,5 @@ interface TransactionRepositoryPort {
     fun findByAccountId(accountId: String): Flux<Transaction>
     fun save(tx: Transaction): Mono<Transaction>
     fun saveAll(transactions: List<Transaction>): Mono<Void>
+    fun findAll(): Flux<Transaction>
 }

@@ -27,4 +27,7 @@ class TransactionRepositoryAdapter(
             .map { it.toDomain() }
             .then()
     }
+
+    override fun findAll(): Flux<Transaction> =
+        repo.findAll().map { it.toDomain() }
 }

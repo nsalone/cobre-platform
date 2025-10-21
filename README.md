@@ -110,6 +110,8 @@ curl http://localhost:8082/actuator/health
 - ✅ `ApplyTransferUseCaseTest` → débitos / créditos / idempotencia
 - ✅ `FinalBalanceCalculationUseCaseTest` → sumatoria y control de balances
 - ✅ `CBMMSagaHandlerTest` → orquestación y fallbacks
+- ✅ `FinalBalancePreviewUseCaseTest` -> balance final de cuentas con movimientos
+- ✅ `FinalBalanceCalculationUseCaseTest` -> agregar balances y validaciones
 
 ---
 
@@ -175,12 +177,22 @@ curl --location 'http://localhost:8091/cbmm/request' \
 }'
 ```
 
-### 📊 Consultar balance
+### 📊 Enviar balances
 ```bash
-curl http://localhost:8090/accounts/ACC987654321
+curl --location 'http://localhost:8085/accounts/final-balance' \
+--header 'Content-Type: application/json' \
+--data '[
+        {"account_id": "ACC987654321", "amount": 1500.00, "currency": "USD", "operation_type": "CREDIT"},
+        {"account_id": "ACC987654330", "amount": 500.00, "currency": "ARS", "operation_type": "DEBIT"},
+        {"account_id": "ACC987654344", "amount": 1000.00, "currency": "EUR", "operation_type": "CREDIT"}
+      ]'
 ```
 
----
+### 📊 Visualizar balances
+```bash
+curl --location 'http://localhost:8085/accounts/preview?currency=ARS&from=2025-01-01&to=2025-12-31' \
+--header 'Accept: application/json'
+```
 
 ## ⚙️ Notas Técnicas Clave
 
@@ -219,6 +231,7 @@ TRUNCATE TABLE cbmm_saga;
 TRUNCATE TABLE event_outbox;
 TRUNCATE TABLE transactions;
 UPDATE accounts SET balance = 20000 WHERE currency IN ('ARS', 'MXN');
+UPDATE accounts SET balance = 0 WHERE currency IN ('EUR', 'USD');
 ```
 
 ---

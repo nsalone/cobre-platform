@@ -1,0 +1,87 @@
+{
+	"info": {
+		"_postman_id": "3b44a08a-b868-4b07-9384-11386c2302c9",
+		"name": "cobre-accounts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1987582",
+		"_collection_link": "https://martian-astronaut-194787.postman.co/workspace/cobre---test~892a74d3-353a-47ee-8d10-19ffacd384ff/collection/1987582-3b44a08a-b868-4b07-9384-11386c2302c9?action=share&source=collection_link&creator=1987582"
+	},
+	"item": [
+		{
+			"name": "create-transfer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"origin_account_id\": \"ACC987654330\",\n    \"destination_account_id\": \"ACC987654321\",\n    \"origin_amount\": 100.00,\n    \"destination_amount\": 1000.00,\n    \"currency_origin\": \"ARG\",\n    \"currency_destination\": \"USD\",\n    \"reference_event_id\": \"{{$randomUUID}}\"\n  }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/accounts/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "final-balance",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n        {\"account_id\": \"ACC987654321\", \"amount\": 1500.00, \"currency\": \"USD\", \"operation_type\": \"CREDIT\"},\n        {\"account_id\": \"ACC987654330\", \"amount\": 500.00, \"currency\": \"ARS\", \"operation_type\": \"DEBIT\"},\n        {\"account_id\": \"ACC987654344\", \"amount\": 1000.00, \"currency\": \"EUR\", \"operation_type\": \"CREDIT\"}\n      ]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/accounts/final-balance",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"accounts",
+						"final-balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "preview",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

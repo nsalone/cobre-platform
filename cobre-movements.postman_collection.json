@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "f1627c1c-6b34-47d7-9686-7d310e9fc006",
+		"name": "cobre-movements",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1987582",
+		"_collection_link": "https://martian-astronaut-194787.postman.co/workspace/cobre---test~892a74d3-353a-47ee-8d10-19ffacd384ff/collection/1987582-f1627c1c-6b34-47d7-9686-7d310e9fc006?action=share&source=collection_link&creator=1987582"
+	},
+	"item": [
+		{
+			"name": "fastforex",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-API-Key",
+						"value": "abe707b227-05eee30a5a-t4cif3"
+					}
+				],
+				"url": {
+					"raw": "https://api.fastforex.io/fetch-one?from=USD&to=COP",
+					"protocol": "https",
+					"host": [
+						"api",
+						"fastforex",
+						"io"
+					],
+					"path": [
+						"fetch-one"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "USD"
+						},
+						{
+							"key": "to",
+							"value": "COP"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "quote",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"origin_currency\": \"USD\",\n  \"destination_currency\": \"ARS\",\n  \"amount\": 100.00\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/fx/quote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"fx",
+						"quote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestTransfer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"currentDate\", new Date().toISOString());"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quote_id\": \"9c40cb82-84bf-408a-b292-083fe48f8bc0\",\n    \"origin_account\": \"ACC987654330\", \n    \"destination_account\": \"ACC987654321\",\n    \"amount\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cbmm/request",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cbmm",
+						"request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "requestTransfer-template",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"quote_id\": \"{{quote_id}}\",\n  \"origin_account\": \"{{origin_account}}\",\n  \"destination_account\": \"{{destination_account}}\",\n  \"amount\": {{amount}}\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cbmm/request",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cbmm",
+						"request"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
