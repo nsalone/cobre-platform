@@ -1,0 +1,17 @@
+services:
+  stress-runner:
+    container_name: cobre-stress-runner
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      BASE_URL: http://movements-service:8091
+    volumes:
+      - ./stress-runner/data.csv:/app/data.csv:ro
+    networks:
+      - cobre-net
+
+networks:
+  cobre-net:
+    external: true
