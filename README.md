@@ -76,7 +76,7 @@ Diseñado con **arquitectura reactiva**, **alta concurrencia**, y **procesamient
 
 ### 1️⃣ Clonar el repositorio
 ```bash
-git clone https://github.com/tu-org/cobre-platform.git
+git clone https://github.com/nsalone/cobre-platform
 cd cobre-platform
 ```
 
